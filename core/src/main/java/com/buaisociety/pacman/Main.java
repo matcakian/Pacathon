@@ -75,7 +75,7 @@ public class Main extends ApplicationAdapter {
         secondLoop = new GameLoop(1);
 
         int processors = Runtime.getRuntime().availableProcessors();
-        threadPool = Executors.newFixedThreadPool(processors);
+        threadPool = Executors.newFixedThreadPool(Math.max(processors / 2, 1));
         System.out.println("Using " + processors + " threads");
 
         // When all games have ended, reset
@@ -103,9 +103,9 @@ public class Main extends ApplicationAdapter {
 
     public @NotNull Neat createNeat() {
         // Change this to true/false as needed, if you want to load from file
-        if (false) {
+        if (true) {
             // TODO: Change this to the exact file you want to load
-            File exactFile = new File("saves" + File.separator + "oct26-4" + File.separator + "generation-51.json");
+            File exactFile = new File("saves" + File.separator + "oct26-9" + File.separator + "generation-9.json");
             // load exactFile contents to string
             String json;
             try {
@@ -125,7 +125,7 @@ public class Main extends ApplicationAdapter {
             neatParameters.setTargetClientsPerSpecies(12);  // targeting ~12 clients per species
             neatParameters.setStagnationLimit(10);  // lower stagnation limit
             neatParameters.setUseBiasNode(true);  // use bias node
-            return new NeatImpl(4, 4, totalGames, neatParameters);
+            return new NeatImpl(6, 4, totalGames, neatParameters);
         }
     }
 

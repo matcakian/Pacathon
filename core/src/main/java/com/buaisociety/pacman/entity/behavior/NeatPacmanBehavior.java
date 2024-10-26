@@ -21,6 +21,11 @@ public class NeatPacmanBehavior implements Behavior {
     // specific pools of points instead of subtracting from all.
     private int scoreModifier = 0;
 
+    // Constructor
+    private int lastScore = 0;
+    private int updatesSinseLastScore = 0;
+
+
     public NeatPacmanBehavior(@NotNull Client client) {
         this.client = client;
     }
@@ -40,6 +45,20 @@ public class NeatPacmanBehavior implements Behavior {
 
         // SPECIAL TRAINING CONDITIONS
         // TODO: Make changes here to help with your training...
+        int newScore = pacman.getMaze().getLevelManager().getScore();
+
+        if (newScore > lastScore) {
+            lastScore = newScore;
+            updatesSinseLastScore = 0;
+        } else {
+            updatesSinseLastScore++;
+        }
+
+        if (updatesSinseLastScore > 60 * 10) {
+            pacman.kill();
+            return Direction.UP;
+        }
+
         // END OF SPECIAL TRAINING CONDITIONS
 
         // We are going to use these directions a lot for different inputs. Get them all once for clarity and brevity
@@ -54,11 +73,19 @@ public class NeatPacmanBehavior implements Behavior {
         boolean canMoveRight = pacman.canMove(right);
         boolean canMoveBehind = pacman.canMove(behind);
 
+        // Vector2i tileDimensions = Tile.getDimensions();
+
+        int xPosition = pacman.getTilePosition().x();
+        int yPosition = pacman.getTilePosition().y();
+
         float[] outputs = client.getCalculator().calculate(new float[]{
             canMoveForward ? 1f : 0f,
             canMoveLeft ? 1f : 0f,
             canMoveRight ? 1f : 0f,
             canMoveBehind ? 1f : 0f,
+
+            xPosition / 28f,
+            yPosition / 36f
         }).join();
 
         int index = 0;
